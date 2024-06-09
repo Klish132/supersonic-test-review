@@ -74,14 +74,15 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    await DatabaseUpdater.UpdateDatabase(serviceProvider);
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    
-    using var scope = app.Services.CreateScope();
-    
-    var serviceProvider = scope.ServiceProvider;
-    await DatabaseUpdater.UpdateDatabase(serviceProvider);
 }
 
 app.UseAuthentication();
